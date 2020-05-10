@@ -17,26 +17,34 @@
 
 import pandas
 
-# Let's read in the aggregate distance 
-distance = pandas.read_csv('csv-data/aggregates_distance.csv', 
+# practice creating functions with this simple one that announces the status of a loaded DataFrame
+def Announce_Loaded_Data_Frame ( Loaded_Name, Loaded_Data_Frame ):
+    print('Loaded file for ' + str(Loaded_Name) +
+            ' with ' + str(Loaded_Data_Frame.ndim) +
+            ' dimensions, ' + str(Loaded_Data_Frame.size) +
+            ' elements averaging ' + str(Loaded_Data_Frame[Loaded_Name].mean().round(2)))
+    return;
+
+# Let's read in the aggregate distance using Pandas. Documentation for the read_csv is here
+# https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
+Distance_Data_Frame = pandas.read_csv('csv-data/aggregates_distance.csv', 
         index_col='Date', 
         parse_dates=['Date'],
-        # It looks like when you rename them here, you have to use the new name in the rest of the arguments. I didn't
-        # expect that behavior.
+        # It looks like when you rename columns here, you have to use the new name forward and backward
+        # I didn't expect that behavior. So, even though the original file says 'date' in the header,
+        # we have to switch to using 'Date' throughout.
         names=['Date','Distance'],
-        # Required to have header=0 because we're renaming
         header=0)
-print('loaded aggregate distance, here is a sample')
-print(distance)
+
+Announce_Loaded_Data_Frame("Distance",Distance_Data_Frame)
 
 # Now let's read in the weight
-weight = pandas.read_csv('csv-data/weight.csv',
-        # Just get date and weight
+Weight_Data_Frame = pandas.read_csv('csv-data/weight.csv',
+        # Just get date and weight, which are the first two columns, index starting at 0.
         usecols=[0,1],
         index_col='Date',
         parse_dates=['Date'],
         header=0,
         names=['Date','Weight'])
-print('loaded weight, here is a sample')
-print(weight)
 
+Announce_Loaded_Data_Frame("Weight", Weight_Data_Frame)
