@@ -1,5 +1,5 @@
-Loaded file for Distance with 1 dimensions and 674 averaging 3114.81
-Loaded file for Weight with 1 dimensions and 266 averaging 199.4
+Loaded file for Distance with 1 dimensions and 674 records averaging 3114.81
+Loaded file for Weight with 1 dimensions and 266 records averaging 199.4
 Frames merged
 Values sorted
            Date  Weight   Distance

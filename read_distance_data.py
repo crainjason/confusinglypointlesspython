@@ -6,7 +6,7 @@ import pandas
 # announce loaded files using schmancy f strings
 def Announce_Loaded_Data_Frame ( name ):
     print (
-            f"Loaded file for {name.name} with {name.ndim} dimensions and {name.size} averaging {name.mean().round(2)}"
+            f"Loaded file for {name.name} with {name.ndim} dimensions and {name.size} records averaging {name.mean().round(2)}"
             )
 
 # Let's read in the aggregate distance using Pandas. Documentation for the read_csv is here
