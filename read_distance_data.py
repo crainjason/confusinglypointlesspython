@@ -1,34 +1,22 @@
-# I'd like to join tables selectively, putting weight and distance as their own columns for each row of date.
-# problems here include different number of rows and different date format in each file. Weight file contains
-# a full datetime stamp, where aggregate distance has only the date. The weight file contains fields that I
-# don't care about. So.. proposed steps:
-#
-# Read in Distance
-# Change header of second column from "value" to "Distance"
-# Store that somewhere
-# Read in first two columns of weight
-# Rename the second column from "Weight (lb)" to "Weight"
-# Split datetime into date and time
-# Look for records with multiple dates, selecting only the one with maximum time
-# Store this somewhere
-# Join the distance and weight tables, creating "0" entries in each direction for unmatched dates
-#   IE - When a weight exists for a date but distance does not, create distance "0"
-#        In the far more likely scenario that distance exists but weight does not, create weight "0"
 
 import pandas
 
 # practice creating functions with this simple one that announces the status of a loaded DataFrame
-def Announce_Loaded_Data_Frame ( Loaded_Name, Loaded_Data_Frame ):
-    print('Loaded file for ' + str(Loaded_Name) +
-            ' with ' + str(Loaded_Data_Frame.ndim) +
-            ' dimensions, ' + str(Loaded_Data_Frame.size) +
-            ' elements averaging ' + str(Loaded_Data_Frame[Loaded_Name].mean().round(2)))
-    return;
+# we use a string called "Loaded_Name," which actually references several things, including
+# 
+# 1. The "purpose" of the file (ie, are we getting weight, distance, etc?)
+# 2. The name of the column we want (luckily we only have date and this other one to choose from)
+# 3. The name of the table, conceptually
+#
+def Announce_Loaded_Data_Frame ( name ):
+    print (
+            f"Loaded file for {name.name} with {name.ndim} dimensions and {name.size} averaging {name.mean().round(2)}"
+            )
 
 # Let's read in the aggregate distance using Pandas. Documentation for the read_csv is here
 # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
-Distance_Data_Frame = pandas.read_csv('csv-data/aggregates_distance.csv',
-        index_col='Date',
+
+Distance_Data_Frame = pandas.read_csv('csv-data/aggregates_distance.csv', 
         parse_dates=['Date'],
         # It looks like when you rename columns here, you have to use the new name forward and backward
         # I didn't expect that behavior. So, even though the original file says 'date' in the header,
@@ -36,15 +24,27 @@ Distance_Data_Frame = pandas.read_csv('csv-data/aggregates_distance.csv',
         names=['Date','Distance'],
         header=0)
 
-Announce_Loaded_Data_Frame("Distance",Distance_Data_Frame)
+# Fix date combination problems by converting everything to a date instead of a datetime... kind of
+Distance_Data_Frame['Date'] = Distance_Data_Frame['Date'].dt.date
+
+#Announce_Loaded_Data_Frame(Distance_Data_Frame["Distance"])
 
 # Now let's read in the weight
 Weight_Data_Frame = pandas.read_csv('csv-data/weight.csv',
         # Just get date and weight, which are the first two columns, index starting at 0.
         usecols=[0,1],
-        index_col='Date',
         parse_dates=['Date'],
         header=0,
         names=['Date','Weight'])
 
-Announce_Loaded_Data_Frame("Weight", Weight_Data_Frame)
+# Fix date combination problems by converting everything to a date instead of a datetime... kind of
+Weight_Data_Frame['Date'] = Weight_Data_Frame['Date'].dt.date
+
+# Join the frames together based on 'Date' column using the union of both
+Combined_Data_Frame = pandas.merge(Weight_Data_Frame,Distance_Data_Frame, how='outer', on='Date')
+
+# Sort everything by date
+Combined_Data_Frame = Combined_Data_Frame.sort_values('Date',ascending=False)
+
+with pandas.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
+    print(Combined_Data_Frame)
