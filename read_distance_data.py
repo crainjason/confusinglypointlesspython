@@ -1,6 +1,6 @@
 # I'd like to join tables selectively, putting weight and distance as their own columns for each row of date.
 # problems here include different number of rows and different date format in each file. Weight file contains
-# a full datetime stamp, where aggregate distance has only the date. The weight file contains fields that I 
+# a full datetime stamp, where aggregate distance has only the date. The weight file contains fields that I
 # don't care about. So.. proposed steps:
 #
 # Read in Distance
@@ -27,8 +27,8 @@ def Announce_Loaded_Data_Frame ( Loaded_Name, Loaded_Data_Frame ):
 
 # Let's read in the aggregate distance using Pandas. Documentation for the read_csv is here
 # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
-Distance_Data_Frame = pandas.read_csv('csv-data/aggregates_distance.csv', 
-        index_col='Date', 
+Distance_Data_Frame = pandas.read_csv('csv-data/aggregates_distance.csv',
+        index_col='Date',
         parse_dates=['Date'],
         # It looks like when you rename columns here, you have to use the new name forward and backward
         # I didn't expect that behavior. So, even though the original file says 'date' in the header,
