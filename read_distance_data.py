@@ -15,6 +15,7 @@ def Announce_Loaded_Data_Frame ( name ):
 
 # Let's read in the aggregate distance using Pandas. Documentation for the read_csv is here
 # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html
+
 Distance_Data_Frame = pandas.read_csv('csv-data/aggregates_distance.csv', 
         parse_dates=['Date'],
         # It looks like when you rename columns here, you have to use the new name forward and backward
